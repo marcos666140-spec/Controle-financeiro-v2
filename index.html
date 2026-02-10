@@ -15,202 +15,187 @@ body {
   background: #0f1117;
   color: #fff;
 }
-.container {
+header {
   padding: 15px;
-  max-width: 650px;
-  margin: auto;
+  background: #161a22;
+  text-align: center;
+  font-size: 1.2em;
+}
+section {
+  padding: 15px;
+  border-bottom: 1px solid #222;
 }
 h2 {
-  margin-top: 30px;
-  border-bottom: 1px solid #333;
-  padding-bottom: 6px;
-}
-.box, .item {
-  background: #1c1f2a;
-  padding: 12px;
-  border-radius: 10px;
-  margin-top: 10px;
-}
-.box input, .item input {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  margin-top: 6px;
+  margin-top: 0;
 }
 .item {
   display: flex;
-  gap: 8px;
-  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
 }
-.item input[type="text"] {
-  flex: 1.2;
-}
-.item input[type="number"] {
+input[type="number"], input[type="text"] {
   flex: 1;
-}
-.item button {
-  background: #e74c3c;
+  padding: 6px;
+  border-radius: 4px;
   border: none;
-  border-radius: 6px;
-  padding: 8px;
-  color: #fff;
 }
-.resumo {
-  background: #2a2e3f;
-  padding: 20px;
-  border-radius: 12px;
-  margin-top: 30px;
-  font-size: 18px;
+input[type="checkbox"] {
+  transform: scale(1.2);
 }
-.add {
+.total {
+  padding: 15px;
+  font-size: 1.3em;
+  background: #161a22;
+}
+button {
+  padding: 6px;
   background: #2ecc71;
-  color: #000;
   border: none;
-  border-radius: 8px;
-  padding: 10px;
-  width: 100%;
-  margin-top: 10px;
-  font-weight: bold;
+  border-radius: 4px;
+}
+.tabs {
+  display: flex;
+}
+.tabs button {
+  flex: 1;
+  background: #222;
+}
+.tabs button.active {
+  background: #2ecc71;
+}
+.hidden {
+  display: none;
 }
 </style>
 </head>
 
 <body>
-<div class="container">
 
-  <div class="box">
-    <label>💰 Dinheiro disponível</label>
-    <input type="number" id="dinheiro">
-  </div>
+<header>📊 Controle Financeiro</header>
 
-  <h2>🏠 Gastos Fixos</h2>
-  <div id="fixos"></div>
+<section>
+  <h2>💰 Saldo Inicial</h2>
+  <input id="saldoInicial" type="number" placeholder="Quanto dinheiro você tem">
+</section>
 
-  <h2>🛒 Compras</h2>
-  <div id="compras"></div>
+<div class="tabs">
+  <button class="active" onclick="mostrarAba('gastos')">Gastos</button>
+  <button onclick="mostrarAba('parcelas')">Parcelas</button>
+</div>
 
-  <h2>🥐 Padaria</h2>
-  <div id="padaria"></div>
+<div id="gastos">
+  <section>
+    <h2>🏠 Gastos Fixos</h2>
+    <div class="item"><input id="aluguel" type="number" placeholder="Aluguel"><input id="aluguelPago" type="checkbox"></div>
+    <div class="item"><input id="agua" type="number" placeholder="Água"><input id="aguaPago" type="checkbox"></div>
+    <div class="item"><input id="luz" type="number" placeholder="Luz"><input id="luzPago" type="checkbox"></div>
+    <div class="item"><input id="internet" type="number" placeholder="Internet"><input id="internetPago" type="checkbox"></div>
+  </section>
 
-  <h2>💊 Farmácia</h2>
-  <div id="farmacia"></div>
+  <section>
+    <h2>🛒 Compras (Cartão)</h2>
+    <div class="item"><input id="cartao" type="number" placeholder="Valor"><input id="cartaoPago" type="checkbox"></div>
+  </section>
 
-  <h2>⛽ Combustível</h2>
-  <div id="combustivel"></div>
+  <section>
+    <h2>🥖 Padaria</h2>
+    <div class="item"><input id="padaria" type="number" placeholder="Valor"><input id="padariaPago" type="checkbox"></div>
+  </section>
 
-  <h2>💳 Parcelas</h2>
-  <div id="parcelas"></div>
-  <button class="add" onclick="addParcela()">➕ Adicionar parcela</button>
+  <section>
+    <h2>💊 Farmácia</h2>
+    <div class="item"><input id="farmacia" type="number" placeholder="Valor"><input id="farmaciaPago" type="checkbox"></div>
+  </section>
 
-  <h2>📌 Gastos à parte</h2>
-  <div id="extras"></div>
+  <section>
+    <h2>⛽ Combustível</h2>
+    <div class="item"><input id="combustivel" type="number" placeholder="Valor"><input id="combustivelPago" type="checkbox"></div>
+  </section>
 
-  <div class="resumo">
-    <div>💸 Total gastos: R$ <span id="total">0.00</span></div>
-    <div>💰 Saldo restante: R$ <span id="saldo">0.00</span></div>
-  </div>
+  <section>
+    <h2>➕ Gastos à parte</h2>
+    <div class="item"><input id="extra" type="number" placeholder="Valor"><input id="extraPago" type="checkbox"></div>
+  </section>
+</div>
 
+<div id="parcelas" class="hidden">
+  <section>
+    <h2>📦 Parcelas</h2>
+
+    <div class="item"><input id="neon" type="number" placeholder="Neon"><input id="neonPago" type="checkbox"></div>
+    <div class="item"><input id="shopee" type="number" placeholder="Shopee"><input id="shopeePago" type="checkbox"></div>
+    <div class="item"><input id="santander" type="number" placeholder="Santander"><input id="santanderPago" type="checkbox"></div>
+    <div class="item"><input id="inter" type="number" placeholder="Inter"><input id="interPago" type="checkbox"></div>
+
+    <h3>➕ Parcelas extras</h3>
+    <div id="parcelasExtras"></div>
+    <button onclick="addParcela()">Adicionar parcela</button>
+  </section>
+</div>
+
+<div class="total">
+  Saldo restante: R$ <span id="saldoFinal">0.00</span>
 </div>
 
 <script>
-const defaultData = {
-  dinheiro: "",
-  sections: {
-    fixos: ["Aluguel", "Água", "Luz", "Internet"],
-    compras: ["Compras à vista", "Cartão crédito"],
-    padaria: ["Padaria"],
-    farmacia: ["Farmácia"],
-    combustivel: ["Combustível"],
-    extras: ["Outros"]
-  },
-  parcelas: [
-    { nome: "Parcela Neon", valor: "" },
-    { nome: "Parcela Shopee", valor: "" },
-    { nome: "Parcela Santander", valor: "" },
-    { nome: "Cartão Inter", valor: "" }
-  ],
-  values: {}
-};
-
-let data = JSON.parse(localStorage.getItem("controleFinanceiro")) || defaultData;
-
-const dinheiroInput = document.getElementById("dinheiro");
-dinheiroInput.value = data.dinheiro;
-
-dinheiroInput.oninput = () => saveAndUpdate();
-
-function createItem(label, key) {
-  const div = document.createElement("div");
-  div.className = "item";
-  div.innerHTML = `<span>${label}</span><input type="number">`;
-  const input = div.querySelector("input");
-  input.value = data.values[key] || "";
-  input.oninput = () => saveAndUpdate();
-  document.getElementById(key.split("-")[0]).appendChild(div);
+function mostrarAba(aba) {
+  document.getElementById("gastos").classList.toggle("hidden", aba !== "gastos");
+  document.getElementById("parcelas").classList.toggle("hidden", aba !== "parcelas");
+  document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
+  event.target.classList.add("active");
 }
 
-function loadSections() {
-  Object.entries(data.sections).forEach(([id, items]) => {
-    items.forEach(name => createItem(name, id + "-" + name));
+function calcular() {
+  let saldo = Number(saldoInicial.value || 0);
+  document.querySelectorAll("input[type='number']").forEach(i => {
+    const pago = document.getElementById(i.id + "Pago");
+    if (pago && !pago.checked) saldo -= Number(i.value || 0);
   });
+  saldoFinal.textContent = saldo.toFixed(2);
 }
 
-function renderParcelas() {
-  const el = document.getElementById("parcelas");
-  el.innerHTML = "";
-  data.parcelas.forEach((p, i) => {
-    const div = document.createElement("div");
-    div.className = "item";
-    div.innerHTML = `
-      <input type="text" value="${p.nome}">
-      <input type="number" value="${p.valor}">
-      <button onclick="removeParcela(${i})">✖</button>
-    `;
-    div.querySelectorAll("input")[0].oninput = e => {
-      data.parcelas[i].nome = e.target.value;
-      saveAndUpdate();
-    };
-    div.querySelectorAll("input")[1].oninput = e => {
-      data.parcelas[i].valor = e.target.value;
-      saveAndUpdate();
-    };
-    el.appendChild(div);
+function salvarDados() {
+  const dados = Array.from(document.querySelectorAll("input")).map(i => ({
+    id: i.id,
+    value: i.type === "checkbox" ? i.checked : i.value
+  }));
+  localStorage.setItem("controleFinanceiro", JSON.stringify(dados));
+}
+
+function carregarDados() {
+  const dados = JSON.parse(localStorage.getItem("controleFinanceiro"));
+  if (!dados) return;
+  dados.forEach(d => {
+    const el = document.getElementById(d.id);
+    if (!el) return;
+    el.type === "checkbox" ? el.checked = d.value : el.value = d.value;
   });
+  calcular();
 }
 
 function addParcela() {
-  data.parcelas.push({ nome: "Nova parcela", valor: "" });
-  renderParcelas();
-  saveAndUpdate();
+  const id = "extraParcela" + Date.now();
+  const div = document.createElement("div");
+  div.className = "item";
+  div.innerHTML = `
+    <input id="${id}" type="number" placeholder="Nova parcela">
+    <input id="${id}Pago" type="checkbox">
+  `;
+  parcelasExtras.appendChild(div);
 }
 
-function removeParcela(i) {
-  data.parcelas.splice(i, 1);
-  renderParcelas();
-  saveAndUpdate();
-}
+document.addEventListener("input", () => {
+  calcular();
+  salvarDados();
+});
 
-function saveAndUpdate() {
-  data.dinheiro = dinheiroInput.value;
-  let total = 0;
+document.addEventListener("change", () => {
+  calcular();
+  salvarDados();
+});
 
-  document.querySelectorAll(".item input[type='number']").forEach(i => {
-    total += parseFloat(i.value) || 0;
-  });
+window.addEventListener("load", carregarDados);
 
-  document.getElementById("total").innerText = total.toFixed(2);
-  document.getElementById("saldo").innerText =
-    ((parseFloat(dinheiroInput.value) || 0) - total).toFixed(2);
-
-  localStorage.setItem("controleFinanceiro", JSON.stringify(data));
-}
-
-loadSections();
-renderParcelas();
-saveAndUpdate();
-</script>
-
-<script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js");
 }
@@ -218,34 +203,3 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
-<script>function salvarDados() {
-  const dados = {
-    saldoInicial: document.getElementById("saldoInicial")?.value || 0,
-    inputs: Array.from(document.querySelectorAll("input")).map(i => ({
-      id: i.id,
-      value: i.type === "checkbox" ? i.checked : i.value
-    }))
-  };
-
-  localStorage.setItem("controleFinanceiro", JSON.stringify(dados));
-}
-</script>
-<script>
-function carregarDados() {
-  const dados = JSON.parse(localStorage.getItem("controleFinanceiro"));
-  if (!dados) return;
-
-  if (document.getElementById("saldoInicial")) {
-    document.getElementById("saldoInicial").value = dados.saldoInicial;
-  }
-
-  dados.inputs.forEach(item => {
-    const el = document.getElementById(item.id);
-    if (!el) return;
-    if (el.type === "checkbox") el.checked = item.value;
-    else el.value = item.value;
-  });
-}
-</script>document.addEventListener("input", salvarDados);
-document.addEventListener("change", salvarDados);
-window.addEventListener("load", carregarDados);
