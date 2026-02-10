@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controle Financeiro</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f1117">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f1117;
+  color: #fff;
+}
+.container {
+  padding: 15px;
+  max-width: 650px;
+  margin: auto;
+}
+h2 {
+  margin-top: 30px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 6px;
+}
+.box, .item {
+  background: #1c1f2a;
+  padding: 12px;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+.box input, .item input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  margin-top: 6px;
+}
+.item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.item input[type="text"] {
+  flex: 1.2;
+}
+.item input[type="number"] {
+  flex: 1;
+}
+.item button {
+  background: #e74c3c;
+  border: none;
+  border-radius: 6px;
+  padding: 8px;
+  color: #fff;
+}
+.resumo {
+  background: #2a2e3f;
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 30px;
+  font-size: 18px;
+}
+.add {
+  background: #2ecc71;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  width: 100%;
+  margin-top: 10px;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+  <div class="box">
+    <label>💰 Dinheiro disponível</label>
+    <input type="number" id="dinheiro">
+  </div>
+
+  <h2>🏠 Gastos Fixos</h2>
+  <div id="fixos"></div>
+
+  <h2>🛒 Compras</h2>
+  <div id="compras"></div>
+
+  <h2>🥐 Padaria</h2>
+  <div id="padaria"></div>
+
+  <h2>💊 Farmácia</h2>
+  <div id="farmacia"></div>
+
+  <h2>⛽ Combustível</h2>
+  <div id="combustivel"></div>
+
+  <h2>💳 Parcelas</h2>
+  <div id="parcelas"></div>
+  <button class="add" onclick="addParcela()">➕ Adicionar parcela</button>
+
+  <h2>📌 Gastos à parte</h2>
+  <div id="extras"></div>
+
+  <div class="resumo">
+    <div>💸 Total gastos: R$ <span id="total">0.00</span></div>
+    <div>💰 Saldo restante: R$ <span id="saldo">0.00</span></div>
+  </div>
+
+</div>
+
+<script>
+const defaultData = {
+  dinheiro: "",
+  sections: {
+    fixos: ["Aluguel", "Água", "Luz", "Internet"],
+    compras: ["Compras à vista", "Cartão crédito"],
+    padaria: ["Padaria"],
+    farmacia: ["Farmácia"],
+    combustivel: ["Combustível"],
+    extras: ["Outros"]
+  },
+  parcelas: [
+    { nome: "Parcela Neon", valor: "" },
+    { nome: "Parcela Shopee", valor: "" },
+    { nome: "Parcela Santander", valor: "" },
+    { nome: "Cartão Inter", valor: "" }
+  ],
+  values: {}
+};
+
+let data = JSON.parse(localStorage.getItem("controleFinanceiro")) || defaultData;
+
+const dinheiroInput = document.getElementById("dinheiro");
+dinheiroInput.value = data.dinheiro;
+
+dinheiroInput.oninput = () => saveAndUpdate();
+
+function createItem(label, key) {
+  const div = document.createElement("div");
+  div.className = "item";
+  div.innerHTML = `<span>${label}</span><input type="number">`;
+  const input = div.querySelector("input");
+  input.value = data.values[key] || "";
+  input.oninput = () => saveAndUpdate();
+  document.getElementById(key.split("-")[0]).appendChild(div);
+}
+
+function loadSections() {
+  Object.entries(data.sections).forEach(([id, items]) => {
+    items.forEach(name => createItem(name, id + "-" + name));
+  });
+}
+
+function renderParcelas() {
+  const el = document.getElementById("parcelas");
+  el.innerHTML = "";
+  data.parcelas.forEach((p, i) => {
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = `
+      <input type="text" value="${p.nome}">
+      <input type="number" value="${p.valor}">
+      <button onclick="removeParcela(${i})">✖</button>
+    `;
+    div.querySelectorAll("input")[0].oninput = e => {
+      data.parcelas[i].nome = e.target.value;
+      saveAndUpdate();
+    };
+    div.querySelectorAll("input")[1].oninput = e => {
+      data.parcelas[i].valor = e.target.value;
+      saveAndUpdate();
+    };
+    el.appendChild(div);
+  });
+}
+
+function addParcela() {
+  data.parcelas.push({ nome: "Nova parcela", valor: "" });
+  renderParcelas();
+  saveAndUpdate();
+}
+
+function removeParcela(i) {
+  data.parcelas.splice(i, 1);
+  renderParcelas();
+  saveAndUpdate();
+}
+
+function saveAndUpdate() {
+  data.dinheiro = dinheiroInput.value;
+  let total = 0;
+
+  document.querySelectorAll(".item input[type='number']").forEach(i => {
+    total += parseFloat(i.value) || 0;
+  });
+
+  document.getElementById("total").innerText = total.toFixed(2);
+  document.getElementById("saldo").innerText =
+    ((parseFloat(dinheiroInput.value) || 0) - total).toFixed(2);
+
+  localStorage.setItem("controleFinanceiro", JSON.stringify(data));
+}
+
+loadSections();
+renderParcelas();
+saveAndUpdate();
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
+</script>
+
+</body>
+</html>
