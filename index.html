@@ -218,3 +218,34 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+<script>function salvarDados() {
+  const dados = {
+    saldoInicial: document.getElementById("saldoInicial")?.value || 0,
+    inputs: Array.from(document.querySelectorAll("input")).map(i => ({
+      id: i.id,
+      value: i.type === "checkbox" ? i.checked : i.value
+    }))
+  };
+
+  localStorage.setItem("controleFinanceiro", JSON.stringify(dados));
+}
+</script>
+<script>
+function carregarDados() {
+  const dados = JSON.parse(localStorage.getItem("controleFinanceiro"));
+  if (!dados) return;
+
+  if (document.getElementById("saldoInicial")) {
+    document.getElementById("saldoInicial").value = dados.saldoInicial;
+  }
+
+  dados.inputs.forEach(item => {
+    const el = document.getElementById(item.id);
+    if (!el) return;
+    if (el.type === "checkbox") el.checked = item.value;
+    else el.value = item.value;
+  });
+}
+</script>document.addEventListener("input", salvarDados);
+document.addEventListener("change", salvarDados);
+window.addEventListener("load", carregarDados);
